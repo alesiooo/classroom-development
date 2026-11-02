@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>DevAcademy LMS Pro — Web3 & Full-Stack Platform</title>
+<meta name="theme-color" content="#0b0f19">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070913;
+  --panel: #0e1322;
+  --panel-hover: #141b2d;
+  --border: #1e2942;
+  --border-light: #2b3a5c;
+  --txt: #f1f5f9;
+  --mut: #8e9bb4;
+  --acc: #4f46e5;
+  --acc-light: #6366f1;
+  --ok: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --panel-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --txt: #0f172a;
+  --mut: #64748b;
+  --acc: #4338ca;
+  --acc-light: #4f46e5;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--txt); font-family: var(--font-sans); min-height: 100vh; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+
+/* Top Header */
+.top { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+.topin { max-width: 1240px; margin: auto; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; cursor: pointer; }
+.brand-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--acc), #8b5cf6); display: grid; place-items: center; font-size: 18px; color: #fff; box-shadow: 0 4px 14px color-mix(in srgb, var(--acc) 40%, transparent); }
+.brand span { background: linear-gradient(90deg, var(--txt), var(--mut)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.btn { border: 1px solid var(--border); background: var(--panel); color: var(--txt); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { border-color: var(--acc); color: var(--acc-light); transform: translateY(-1px); }
+.btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; }
+.btn.primary:hover { background: var(--acc-light); }
+
+/* Navigation Tabs */
+.nav-tabs { max-width: 1240px; margin: 16px auto 0; padding: 0 18px; display: flex; gap: 8px; border-bottom: 1px solid var(--border); }
+.nav-tab { padding: 12px 20px; font-weight: 700; font-size: 14px; color: var(--mut); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+.nav-tab:hover { color: var(--txt); }
+.nav-tab.active { color: var(--acc-light); border-bottom-color: var(--acc-light); }
+
+/* Main Container */
+.container { max-width: 1240px; margin: 20px auto 60px; padding: 0 18px; }
+
+/* Hero Banner */
+.hero-banner { background: linear-gradient(135deg, color-mix(in srgb, var(--acc) 18%, var(--panel)), var(--panel)); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.hero-title { margin: 0 0 6px; font-size: 24px; font-weight: 800; }
+.hero-desc { margin: 0; color: var(--mut); font-size: 14px; max-width: 700px; line-height: 1.5; }
+.progress-box { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px 18px; text-align: right; min-width: 180px; }
+.progress-val { font-size: 22px; font-weight: 800; color: var(--ok); }
+.progress-label { font-size: 11px; color: var(--mut); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Video Player Stage */
+.player-stage { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+.video-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
+.video-wrap #player { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.player-footer { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; background: var(--panel); border-top: 1px solid var(--border); }
+.current-info { flex: 1; min-width: 250px; }
+.current-title { margin: 0 0 4px; font-size: 18px; font-weight: 800; }
+.current-mod { font-size: 12px; color: var(--mut); font-family: var(--font-mono); }
+
+.badge-status { font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 99px; background: var(--panel-hover); border: 1px solid var(--border); color: var(--mut); display: inline-flex; align-items: center; gap: 8px; }
+.badge-status.playing { border-color: var(--acc); color: var(--acc-light); background: color-mix(in srgb, var(--acc) 10%, transparent); }
+.badge-status.done { border-color: var(--ok); color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+
+/* Curriculum Layout */
+.syll-section-title { font-size: 18px; font-weight: 800; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+.modules-grid { display: flex; flex-direction: column; gap: 16px; }
+
+.mod-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: border-color 0.2s; }
+.mod-card:hover { border-color: var(--border-light); }
+.mod-header { padding: 16px 20px; background: color-mix(in srgb, var(--panel-hover) 60%, transparent); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.mod-title { margin: 0; font-size: 15px; font-weight: 700; }
+.mod-count { font-size: 12px; color: var(--mut); font-family: var(--font-mono); }
+
+.topic-list { display: flex; flex-direction: column; }
+.topic-item { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; transition: background 0.2s; }
+.topic-item:last-child { border-bottom: 0; }
+.topic-item:hover { background: var(--panel-hover); }
+.topic-item.active { background: color-mix(in srgb, var(--acc) 12%, transparent); border-left: 4px solid var(--acc-light); }
+.topic-item.locked { opacity: 0.45; pointer-events: none; }
+
+.topic-left { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+.topic-status-icon { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); display: grid; place-items: center; font-size: 13px; flex: none; background: var(--panel); }
+.topic-item.active .topic-status-icon { border-color: var(--acc-light); color: var(--acc-light); }
+.topic-item.done .topic-status-icon { background: var(--ok); border-color: var(--ok); color: #fff; }
+
+.topic-name { font-size: 14px; font-weight: 600; color: var(--txt); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topic-name:hover { color: var(--acc-light); }
+
+/* Hub de Notas */
+.notes-container { display: flex; flex-direction: column; gap: 24px; }
+.note-form-card { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+.note-form-card h3 { margin: 0; font-size: 16px; font-weight: 800; }
+.note-input, .note-select, .note-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--txt); border-radius: 12px; padding: 12px 16px; font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
+.note-input:focus, .note-select:focus, .note-textarea:focus { border-color: var(--acc-light); }
+
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.note-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+.note-card-title { font-size: 15px; font-weight: 700; margin: 0; color: var(--txt); }
+.note-card-body { font-size: 13px; color: var(--mut); margin: 0; white-space: pre-wrap; line-height: 1.5; font-family: inherit; }
+.note-card-meta { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--mut); font-family: var(--font-mono); }
+
+/* Toast Notifications */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--acc-light); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.4); opacity: 0; transform: translateY(14px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; z-index: 100; display: flex; align-items: center; gap: 10px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- Top App Bar -->
+<header class="top">
+  <div class="topin">
+    <div class="brand" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <div class="brand-logo">⚡</div>
+      <div>DevAcademy <span>LMS Pro</span></div>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="toggleTheme()">🌙 Tema</button>
+      <button class="btn" onclick="exportData()">⬇️ Respaldar Datos</button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Navigation Tabs -->
+<nav class="nav-tabs">
+  <div class="nav-tab active" id="tabLessons" onclick="switchTab('lessons')">📺 Aula & Plan de Estudios</div>
+  <div class="nav-tab" id="tabNotes" onclick="switchTab('notes')">📝 Hub de Notas por Tema</div>
+</nav>
+
+<main class="container">
+  
+  <!-- VIEW 1: AULA & PLAN DE ESTUDIOS -->
+  <section id="viewLessons">
+    
+    <!-- Hero Header Bar -->
+    <div class="hero-banner">
+      <div>
+        <h1 class="hero-title">Ruta Completa: Full-Stack & Smart Contract Developer</h1>
+        <p class="hero-desc">48 temas estructurados de cero a nivel profesional. Completa la reproducción del tema actual para desbloquear la lección siguiente de forma totalmente automatizada.</p>
+      </div>
+      <div class="progress-box">
+        <div class="progress-val" id="progressVal">0 / 48</div>
+        <div class="progress-label">Temas Completados</div>
+      </div>
+    </div>
+
+    <!-- YouTube Official IFrame API Player Stage -->
+    <div class="player-stage" id="playerStage">
+      <div class="video-wrap">
+        <div id="player"></div>
+      </div>
+      <div class="player-footer">
+        <div class="current-info">
+          <h2 class="current-title" id="currentTitle">Cargando lección...</h2>
+          <div class="current-mod" id="currentMod">Módulo 0. Fundamentos de Programación</div>
+        </div>
+        <div class="badge-status" id="badgeStatus">
+          <span>⚪ En espera</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 48 Topics Modules Syllabus -->
+    <div class="syll-section-title">
+      <span>📚 Módulos del Plan de Estudios</span>
+    </div>
+    <div class="modules-grid" id="modulesGrid"></div>
+  </section>
+
+  <!-- VIEW 2: HUB DE NOTAS -->
+  <section id="viewNotes" style="display: none;">
+    <div class="notes-container">
+      <div class="note-form-card">
+        <h3>Añadir Nueva Nota a un Tema</h3>
+        <select class="note-select" id="noteTopicSelect"></select>
+        <input type="text" class="note-input" id="noteTitleInput" placeholder="Título de la nota (ej: Concepto de Reentrancy en Solidity)">
+        <textarea class="note-textarea" id="noteContentInput" rows="4" placeholder="Escribe tus apuntes detallados de la clase..."></textarea>
+        <button class="btn primary" style="align-self: flex-end;" onclick="saveNote()">Guardar en el Hub</button>
+      </div>
+
+      <div class="notes-grid" id="notesGrid"></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast">Notificación</div>
+
+<!-- YouTube Official API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+// 48 Official Topics Organized into 8 Modules
+const CURRICULUM = [
+  {
+    id: "m0",
+    title: "0. Fundamentos de programación",
+    lessons: [
+      { id: "t1", title: "1. Cómo funciona Internet, la web y las aplicaciones", vid: "VEYvEWL1Cdc" },
+      { id: "t2", title: "2. JavaScript desde cero: variables, funciones, arrays y objetos", vid: "pL_TWkVOxiQ" },
+      { id: "t3", title: "3. JavaScript asíncrono: promesas, async/await y fetch", vid: "pL_TWkVOxiQ" },
+      { id: "t4", title: "4. Terminal, Node.js y npm: entorno de desarrollo", vid: "VEYvEWL1Cdc" }
+    ]
+  },
+  {
+    id: "m1",
+    title: "1. Blockchain y Ethereum",
+    lessons: [
+      { id: "t11", title: "11. Introducción al blockchain", vid: "niINIit8svs" },
+      { id: "t12", title: "12. Bitcoin, Ethereum y la EVM", vid: "niINIit8svs" },
+      { id: "t13", title: "13. Wallets, claves privadas y firmas digitales", vid: "niINIit8svs" },
+      { id: "t14", title: "14. Gas, transacciones, testnets y Etherscan", vid: "niINIit8svs" }
+    ]
+  },
+  {
+    id: "m2",
+    title: "2. Solidity desde cero",
+    lessons: [
+      { id: "t15", title: "15. Remix: tu primer contrato inteligente", vid: "1cKtA1EQalo" },
+      { id: "t16", title: "16. Tipos de datos, variables y visibilidad", vid: "1cKtA1EQalo" },
+      { id: "t17", title: "17. Funciones, modifiers, require, revert y eventos", vid: "25-P_NSOlQM" },
+      { id: "t18", title: "18. Mappings, structs, arrays y enumeraciones", vid: "25-P_NSOlQM" },
+      { id: "t19", title: "19. Herencia, interfaces, librerías y abstract contracts", vid: "25-P_NSOlQM" },
+      { id: "t20", title: "20. Payable, receive, fallback y envío de ETH", vid: "25-P_NSOlQM" },
+      { id: "t21", title: "21. Proyecto: sistema de votación on-chain", vid: "h1yUJonY04E" }
+    ]
+  },
+  {
+    id: "m3",
+    title: "3. Testing y despliegue con Foundry",
+    lessons: [
+      { id: "t22", title: "22. Instalar Foundry y crear tu primer proyecto", vid: "dPWbcY_I8N0" },
+      { id: "t23", title: "23. Tests básicos y abstract contracts", vid: "r104B9GdPLs" },
+      { id: "t24", title: "24. Cheatcodes y expectRevert", vid: "cYknzdtOeOY" },
+      { id: "t25", title: "25. Fuzz testing e invariant testing", vid: "NTAJRhmk870" },
+      { id: "t26", title: "26. Leer trazas y depurar errores", vid: "gO_kaS0lk-s" },
+      { id: "t27", title: "27. Anvil: blockchain local y despliegues", vid: "b0xdFqQwsL4" },
+      { id: "t28", title: "28. Forks de red y testing multichain", vid: "-IQSTeJYBbU" },
+      { id: "t29", title: "29. Scripts: desplegar y verificar en testnet/mainnet", vid: "syFww00o7ug" }
+    ]
+  },
+  {
+    id: "m4",
+    title: "4. Estándares y proyectos on-chain",
+    lessons: [
+      { id: "t30", title: "30. ERC-20: crea tu propio token", vid: "h1yUJonY04E" },
+      { id: "t31", title: "31. ERC-721 y ERC-1155: NFTs", vid: "h1yUJonY04E" },
+      { id: "t32", title: "32. Control de acceso: Ownable, roles y multisig", vid: "h1yUJonY04E" },
+      { id: "t33", title: "33. Proyecto: staking, vault o crowdfund", vid: "h1yUJonY04E" }
+    ]
+  },
+  {
+    id: "m5",
+    title: "5. dApps: frontend + blockchain",
+    lessons: [
+      { id: "t34", title: "34. HTML, CSS y JavaScript para dApps", vid: "pL_TWkVOxiQ" },
+      { id: "t35", title: "35. React: componentes, estado y hooks", vid: "pL_TWkVOxiQ" },
+      { id: "t36", title: "36. Ethers.js / Viem: leer contratos y enviar transacciones", vid: "pL_TWkVOxiQ" },
+      { id: "t37", title: "37. Wagmi y RainbowKit: conectar wallet al frontend", vid: "pL_TWkVOxiQ" },
+      { id: "t38", title: "38. Proyecto final: DApp completa", vid: "h1yUJonY04E" }
+    ]
+  },
+  {
+    id: "m6",
+    title: "6. DeFi y contratos avanzados & Seguridad",
+    lessons: [
+      { id: "t39", title: "39. Cómo funcionan DEX, AMM y pools de liquidez", vid: "h1yUJonY04E" },
+      { id: "t40", title: "40. Préstamos, colateral, liquidaciones y oráculos", vid: "h1yUJonY04E" },
+      { id: "t41", title: "41. Stablecoins, puentes y riesgos cross-chain", vid: "-IQSTeJYBbU" },
+      { id: "t42", title: "42. Optimización de gas y patrones de diseño", vid: "Y4Qi5cFiOBM" },
+      { id: "t43", title: "43. Upgradeability: proxies y contratos actualizables", vid: "Y4Qi5cFiOBM" },
+      { id: "t44", title: "44. Vulnerabilidades: reentrancy, access control y overflow", vid: "Y4Qi5cFiOBM" },
+      { id: "t45", title: "45. Auditoría de contratos y herramientas de análisis", vid: "Y4Qi5cFiOBM" },
+      { id: "t46", title: "46. Rug pulls, phishing y seguridad operacional", vid: "Y4Qi5cFiOBM" },
+      { id: "t47", title: "47. Portfolio, GitHub, CV y búsqueda de empleo Web3", vid: "VEYvEWL1Cdc" },
+      { id: "t48", title: "48. Hackathons, open source y comunidad", vid: "-Pu67IpxDFU" }
+    ]
+  },
+  {
+    id: "m_git",
+    title: "8. Git y GitHub en español (Herramientas esenciales)",
+    lessons: [
+      { id: "t5", title: "5. Aprende Git y GitHub desde cero — freeCodeCamp Español", vid: "mBYSUUnMt9M" },
+      { id: "t6", title: "6. Curso de Git desde cero — freeCodeCamp Español", vid: "h2ZzlNVl-nI" },
+      { id: "t7", title: "7. Git y GitHub desde cero: curso completo", vid: "ZCiKsdoPfhY" },
+      { id: "t8", title: "8. Curso completo de Git y GitHub", vid: "6L9G7x9XU4o" },
+      { id: "t9", title: "9. Curso Git & GitHub — Píldoras Informáticas", vid: "ANF1X42_ae4" },
+      { id: "t10", title: "10. Git y GitHub — Titanium Institute", vid: "rTBKZsZU3hc" }
+    ]
+  }
+];
+
+// Persistent State
+let appState = JSON.parse(localStorage.getItem('devacademy_pro_final_state')) || {
+  completed: {},
+  notes: [],
+  currentLessonId: "t1",
+  theme: "dark"
+};
+
+let player = null;
+let flatLessons = [];
+
+function initFlatLessons() {
+  flatLessons = [];
+  CURRICULUM.forEach(mod => {
+    mod.lessons.forEach(l => {
+      flatLessons.push({ ...l, modTitle: mod.title });
+    });
+  });
+}
+
+function saveState() {
+  localStorage.setItem('devacademy_pro_final_state', JSON.stringify(appState));
+  renderStats();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Global YouTube API Ready Callback
+function onYouTubeIframeAPIReady() {
+  const currentObj = flatLessons.find(l => l.id === appState.currentLessonId) || flatLessons[0];
+  player = new YT.Player('player', {
+    videoId: currentObj.vid,
+    playerVars: { 'autoplay': 0, 'rel': 0, 'modestbranding': 1 },
+    events: {
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+// Detect video state change (Ended, Playing, Paused)
+function onPlayerStateChange(event) {
+  const badge = document.getElementById('badgeStatus');
+  
+  if (event.data === YT.PlayerState.PLAYING) {
+    badge.className = 'badge-status playing';
+    badge.innerHTML = '<span>▶️ En reproducción...</span>';
+  } else if (event.data === YT.PlayerState.PAUSED) {
+    badge.className = 'badge-status';
+    badge.innerHTML = '<span>⏸️ En pausa</span>';
+  } else if (event.data === YT.PlayerState.ENDED) {
+    badge.className = 'badge-status done';
+    badge.innerHTML = '<span>✅ ¡Completado!</span>';
+    
+    // Auto-mark completed
+    appState.completed[appState.currentLessonId] = true;
+    saveState();
+    renderSyllabus();
+
+    // Auto advance smoothly
+    autoAdvanceNext();
+  }
+}
+
+function autoAdvanceNext() {
+  const idx = flatLessons.findIndex(l => l.id === appState.currentLessonId);
+  if (idx >= 0 && idx < flatLessons.length - 1) {
+    const nextLesson = flatLessons[idx + 1];
+    showToast(`¡Lección finalizada! Avanzando a: ${nextLesson.title}`);
+    setTimeout(() => {
+      selectLesson(nextLesson.id, true);
+    }, 1200);
+  } else {
+    showToast("🎉 ¡Felicitaciones! Has completado las 48 lecciones del plan.");
+  }
+}
+
+function isLessonUnlocked(lessonId) {
+  const idx = flatLessons.findIndex(l => l.id === lessonId);
+  if (idx === 0) return true;
+  const prevLesson = flatLessons[idx - 1];
+  return !!appState.completed[prevLesson.id];
+}
+
+function selectLesson(lessonId, autoPlay = false) {
+  if (!isLessonUnlocked(lessonId)) {
+    showToast("🔒 Completa las lecciones anteriores para desbloquear este tema.");
+    return;
+  }
+
+  appState.currentLessonId = lessonId;
+  saveState();
+
+  const lessonObj = flatLessons.find(l => l.id === lessonId);
+  if (!lessonObj) return;
+
+  document.getElementById('currentTitle').innerText = lessonObj.title;
+  document.getElementById('currentMod').innerText = lessonObj.modTitle;
+
+  if (player && player.loadVideoById) {
+    if (autoPlay) {
+      player.loadVideoById(lessonObj.vid);
+    } else {
+      player.cueVideoById(lessonObj.vid);
+    }
+  }
+
+  renderSyllabus();
+
+  // Smooth scroll to video stage automatically
+  const stage = document.getElementById('playerStage');
+  if (stage) {
+    stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function renderSyllabus() {
+  const container = document.getElementById('modulesGrid');
+  container.innerHTML = '';
+
+  CURRICULUM.forEach(mod => {
+    const card = document.createElement('div');
+    card.className = 'mod-card';
+
+    let topicsHTML = '';
+    mod.lessons.forEach(l => {
+      const isDone = !!appState.completed[l.id];
+      const isActive = appState.currentLessonId === l.id;
+      const unlocked = isLessonUnlocked(l.id);
+
+      topicsHTML += `
+        <div class="topic-item ${isActive ? 'active' : ''} ${isDone ? 'done' : ''} ${!unlocked ? 'locked' : ''}">
+          <div class="topic-left">
+            <div class="topic-status-icon">${isDone ? '✓' : (unlocked ? '▶' : '🔒')}</div>
+            <span class="topic-name" onclick="selectLesson('${l.id}', true)">${l.title}</span>
+          </div>
+          <span style="font-size:11px; color:var(--mut); font-family:var(--font-mono);">${isDone ? 'Completado' : (isActive ? 'Viendo' : '')}</span>
+        </div>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="mod-header">
+        <h3 class="mod-title">${mod.title}</h3>
+        <span class="mod-count">${mod.lessons.length} temas</span>
+      </div>
+      <div class="topic-list">${topicsHTML}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function renderStats() {
+  let doneCount = 0;
+  flatLessons.forEach(l => {
+    if (appState.completed[l.id]) doneCount++;
+  });
+  document.getElementById('progressVal').innerText = `${doneCount} / ${flatLessons.length}`;
+}
+
+// Tabs
+function switchTab(tab) {
+  document.getElementById('tabLessons').classList.toggle('active', tab === 'lessons');
+  document.getElementById('tabNotes').classList.toggle('active', tab === 'notes');
+  document.getElementById('viewLessons').style.display = tab === 'lessons' ? 'block' : 'none';
+  document.getElementById('viewNotes').style.display = tab === 'notes' ? 'block' : 'none';
+}
+
+// Hub de Notas
+function populateTopicSelector() {
+  const sel = document.getElementById('noteTopicSelect');
+  sel.innerHTML = '';
+  flatLessons.forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.innerText = `${l.title}`;
+    sel.appendChild(opt);
+  });
+}
+
+function saveNote() {
+  const topicId = document.getElementById('noteTopicSelect').value;
+  const title = document.getElementById('noteTitleInput').value.trim();
+  const content = document.getElementById('noteContentInput').value.trim();
+
+  if (!title || !content) {
+    alert('Ingresa un título y el contenido para la nota.');
+    return;
+  }
+
+  const newNote = {
+    id: 'note_' + Date.now(),
+    topicId,
+    title,
+    content,
+    date: new Date().toLocaleDateString('es-AR')
+  };
+
+  appState.notes.push(newNote);
+  saveState();
+
+  document.getElementById('noteTitleInput').value = '';
+  document.getElementById('noteContentInput').value = '';
+  renderNotes();
+  showToast('Nota guardada con éxito.');
+}
+
+function renderNotes() {
+  const grid = document.getElementById('notesGrid');
+  grid.innerHTML = '';
+
+  if (appState.notes.length === 0) {
+    grid.innerHTML = '<div style="color:var(--mut); font-size:14px;">No hay notas registradas. Agrega tu primera nota arriba.</div>';
+    return;
+  }
+
+  appState.notes.forEach(n => {
+    const topicObj = flatLessons.find(l => l.id === n.topicId);
+    const card = document.createElement('div');
+    card.className = 'note-card';
+    card.innerHTML = `
+      <h4 class="note-card-title">${n.title}</h4>
+      <p class="note-card-body">${n.content}</p>
+      <div class="note-card-meta">
+        <span>📍 ${topicObj ? topicObj.title : 'General'}</span>
+        <span>${n.date}</span>
+      </div>
+      <button class="btn" style="padding:4px 8px; font-size:11px; align-self:flex-end; margin-top:6px;" onclick="deleteNote('${n.id}')">Eliminar</button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function deleteNote(id) {
+  appState.notes = appState.notes.filter(n => n.id !== id);
+  saveState();
+  renderNotes();
+}
+
+function toggleTheme() {
+  appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', appState.theme);
+  saveState();
+}
+
+function exportData() {
+  const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", str);
+  dlAnchor.setAttribute("download", `devacademy_backup_${Date.now()}.json`);
+  document.body.appendChild(dlAnchor);
+  dlAnchor.click();
+  dlAnchor.remove();
+}
+
+// App Launch
+window.addEventListener('DOMContentLoaded', () => {
+  initFlatLessons();
+  document.body.setAttribute('data-theme', appState.theme || 'dark');
+  renderSyllabus();
+  renderStats();
+  populateTopicSelector();
+  renderNotes();
+
+  const currentObj = flatLessons.find(l => l.id === appState.currentLessonId) || flatLessons[0];
+  document.getElementById('currentTitle').innerText = currentObj.title;
+  document.getElementById('currentMod').innerText = currentObj.modTitle;
+});
+</script>
+</body>
+</html>
