@@ -211,9 +211,6 @@ a { color: inherit; text-decoration: none; }
 
 <div class="toast" id="toast">Notificación</div>
 
-<!-- YouTube Official API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
 // 48 Official Topics Organized into 8 Modules
 const CURRICULUM = [
@@ -324,6 +321,9 @@ let appState = JSON.parse(localStorage.getItem('devacademy_pro_final_state')) ||
 };
 
 let player = null;
+let playerReady = false;
+let pendingAutoplay = false;
+let youtubeApiReady = false;
 let flatLessons = [];
 
 function initFlatLessons() {
@@ -347,16 +347,72 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// Global YouTube API Ready Callback
-function onYouTubeIframeAPIReady() {
+function showPlayerError(message) {
+  const badge = document.getElementById('badgeStatus');
+  const currentObj = flatLessons.find(l => l.id === appState.currentLessonId);
+  badge.className = 'badge-status';
+  badge.replaceChildren();
+
+  const text = document.createElement('span');
+  text.textContent = message;
+  badge.appendChild(text);
+
+  if (currentObj) {
+    const link = document.createElement('a');
+    link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(currentObj.vid)}`;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Abrir en YouTube';
+    badge.appendChild(link);
+  }
+}
+
+function handlePlayerError(event) {
+  const messages = {
+    2: 'El identificador de este video no es válido.',
+    5: 'YouTube no pudo reproducir este video en el reproductor HTML5.',
+    100: 'Este video fue eliminado o es privado.',
+    101: 'El propietario del video no permite reproducirlo aquí.',
+    150: 'El propietario del video no permite reproducirlo aquí.',
+    153: 'YouTube no recibió la información necesaria del sitio para reproducirlo.'
+  };
+  showPlayerError(messages[event.data] || 'YouTube no pudo cargar este video. Comprueba tu conexión o si el video está disponible.');
+}
+
+function initializePlayer() {
+  if (!youtubeApiReady || !flatLessons.length || player) return;
+
   const currentObj = flatLessons.find(l => l.id === appState.currentLessonId) || flatLessons[0];
   player = new YT.Player('player', {
     videoId: currentObj.vid,
-    playerVars: { 'autoplay': 0, 'rel': 0, 'modestbranding': 1 },
+    playerVars: {
+      autoplay: 0,
+      rel: 0,
+      playsinline: 1,
+      ...(window.location.protocol === 'http:' || window.location.protocol === 'https:'
+        ? { origin: window.location.origin }
+        : {})
+    },
     events: {
-      'onStateChange': onPlayerStateChange
+      onReady: () => {
+        playerReady = true;
+        const selectedLesson = flatLessons.find(l => l.id === appState.currentLessonId) || flatLessons[0];
+        if (pendingAutoplay) {
+          player.loadVideoById(selectedLesson.vid);
+          pendingAutoplay = false;
+        } else {
+          player.cueVideoById(selectedLesson.vid);
+        }
+      },
+      onStateChange: onPlayerStateChange,
+      onError: handlePlayerError
     }
   });
+}
+
+function onYouTubeIframeAPIReady() {
+  youtubeApiReady = true;
+  initializePlayer();
 }
 
 // Detect video state change (Ended, Playing, Paused)
@@ -418,12 +474,14 @@ function selectLesson(lessonId, autoPlay = false) {
   document.getElementById('currentTitle').innerText = lessonObj.title;
   document.getElementById('currentMod').innerText = lessonObj.modTitle;
 
-  if (player && player.loadVideoById) {
+  if (player && playerReady) {
     if (autoPlay) {
       player.loadVideoById(lessonObj.vid);
     } else {
       player.cueVideoById(lessonObj.vid);
     }
+  } else if (autoPlay) {
+    pendingAutoplay = true;
   }
 
   renderSyllabus();
@@ -587,6 +645,17 @@ window.addEventListener('DOMContentLoaded', () => {
   const currentObj = flatLessons.find(l => l.id === appState.currentLessonId) || flatLessons[0];
   document.getElementById('currentTitle').innerText = currentObj.title;
   document.getElementById('currentMod').innerText = currentObj.modTitle;
+
+  if (window.YT && window.YT.Player) {
+    youtubeApiReady = true;
+    initializePlayer();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = 'https://www.youtube.com/iframe_api';
+  script.onerror = () => showPlayerError('No se pudo conectar con YouTube. Revisa tu conexión o si el navegador bloquea el reproductor.');
+  document.head.appendChild(script);
 });
 </script>
 </body>
